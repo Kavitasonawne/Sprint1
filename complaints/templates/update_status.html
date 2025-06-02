@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Complaint Status</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #222;
+            font-weight: 600;
+            font-size: 1.6rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        select {
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1.5px solid #ccc;
+            font-size: 1rem;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 8px rgba(74,144,226,0.3);
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 14px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ab8;
+        }
+
+        p {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        a {
+            color: #4a90e2;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #357ab8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h2>Update Status for: {{ complaint.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>Status:</label><br>
+        <select name="status">
+            <option value="Pending" {% if complaint.status == "Pending" %}selected{% endif %}>Pending</option>
+            <option value="In Progress" {% if complaint.status == "In Progress" %}selected{% endif %}>In Progress</option>
+            <option value="Resolved" {% if complaint.status == "Resolved" %}selected{% endif %}>Resolved</option>
+        </select><br><br>
+        <button type="submit">Update</button>
+    </form>
+    <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+</body>
+</html>

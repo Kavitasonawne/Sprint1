@@ -1,0 +1,23 @@
+<!-- complaints/templates/submit_complaint.html -->
+<!DOCTYPE html>
+<html>
+<head>
+     {% load static %}
+    <title>Submit Complaint</title>
+    <link rel="stylesheet" href="{% static 'complaints/style.css' %}">
+</head>
+<body>
+    <h2>Submit Complaint</h2>
+    <form method="post">
+        {% csrf_token %}
+        <label>Title:</label><br>
+        <input type="text" name="title" required><br><br>
+
+        <label>Description:</label><br>
+        <textarea name="description" required></textarea><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+    <p><a href="{% url 'dashboard' %}">Back to Dashboard</a></p>
+</body>
+</html>

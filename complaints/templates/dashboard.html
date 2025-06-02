@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 20px;
+        }
+
+        a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        a:hover {
+            color: #357ab8;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            word-wrap: break-word;
+            word-break: break-word;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #004aad;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        /* Width control for even spacing */
+        th:nth-child(1), td:nth-child(1) { width: 10%; }  /* Name */
+        th:nth-child(2), td:nth-child(2) { width: 12%; }  /* Contact */
+        th:nth-child(3), td:nth-child(3) { width: 10%; }  /* Title */
+        th:nth-child(4), td:nth-child(4) { width: 20%; }  /* Description */
+        th:nth-child(5), td:nth-child(5) { width: 8%; }   /* Gender */
+        th:nth-child(6), td:nth-child(6) { width: 10%; }  /* Category */
+        th:nth-child(7), td:nth-child(7) { width: 12%; }  /* Area */
+        th:nth-child(8), td:nth-child(8) { width: 8%; }   /* Status */
+        th:nth-child(9), td:nth-child(9),
+        th:nth-child(10), td:nth-child(10) { width: 5%; } /* Update/Delete */
+
+        button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        @media screen and (max-width: 768px) {
+            th, td {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome, {{ request.user.username }}</h1>
+
+    {% if request.user.is_superuser %}
+        <h2>All Complaints</h2>
+    {% else %}
+        <h2>Your Complaints</h2>
+        <a href="{% url 'submit_complaint' %}">Submit a Complaint</a>
+    {% endif %}
+
+    {% if complaints %}
+    <table>
+        <tr>
+            <th>Person Name</th>
+            <th>Contact No</th>
+            <th>Title</th>
+            <th>Description</th>
+             <th>Gender</th> 
+            <th>Category</th>
+            <th>Area</th>
+            <th>Status</th>
+            {% if request.user.is_superuser %}
+                <th>Update</th>
+                <th>Delete</th>
+            {% endif %}
+        </tr>
+        {% for complaint in complaints %}
+        <tr>
+            <td>{{ complaint.person_name }}</td>
+            <td>{{ complaint.contact_number }}</td>
+            <td>{{ complaint.title }}</td>
+            <td>{{ complaint.description }}</td>
+            <td>{{ complaint.gender }}</td>
+            <td>{{ complaint.category }}</td>
+            <td>{{ complaint.area }}</td>
+            <td>{{ complaint.status }}</td>
+            {% if request.user.is_superuser %}
+                <td><a href="{% url 'update_status' complaint.id %}">Update</a></td>
+                <td>
+                    <form action="{% url 'delete_complaint' complaint.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Are you sure you want to delete this complaint?');">Del</button>
+                    </form>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No complaints to show.</p>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+</body>
+</html>
